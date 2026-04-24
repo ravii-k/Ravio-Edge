@@ -33,8 +33,8 @@ This repository contains two interconnected modules:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/RavioEdge.git
-   cd RavioEdge/RavioEdge
+   git clone https://github.com/ravii-k/Ravio-Edge.git
+   cd Ravio-Edge/RavioEdge
    ```
 
 2. **Install Dependencies:**
