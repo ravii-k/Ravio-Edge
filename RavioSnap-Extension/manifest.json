@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "RavioSnap-Extension",
+  "version": "1.0",
+  "description": "Auto-captures TradingView and Dhan screenshots and sends them to Ravio Edge.",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Capture & Analyze"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://localhost:3000/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
