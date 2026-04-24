@@ -159,7 +159,6 @@ Feel free to fork the repo and add any of these features if you want!
 
 <br />
 
-<div align="center">
 ---
 ## 👨‍💻 Author
 
@@ -168,4 +167,4 @@ Feel free to fork the repo and add any of these features if you want!
 
 ---
 
-</div>
+> Built with ❤️
