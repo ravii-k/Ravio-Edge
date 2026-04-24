@@ -1,5 +1,15 @@
 <div align="center">
   <img src="RavioEdge/public/logo.png" alt="Ravio Edge Logo" width="200" />
+
+<div align="center">
+
+---
+
+ >*We are all living in a simulation*
+
+---
+
+</div>
   
   # Ravio Edge: Quantitative Trading Terminal
 
@@ -150,5 +160,12 @@ Feel free to fork the repo and add any of these features if you want!
 <br />
 
 <div align="center">
-  <i>Built for precision. Designed for speed.</i>
+---
+## 👨‍💻 Author
+
+**Ravi Kashyap**
+- GitHub: [@Ravionite](https://github.com/ravii-k)
+
+---
+
 </div>
