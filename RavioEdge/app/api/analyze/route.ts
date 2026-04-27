@@ -68,7 +68,6 @@ async function scrapePulseNews() {
   }
 }
 
-// Helper to convert base64 to Gemini Part object
 function fileToGenerativePart(base64Data: string, mimeType: string) {
   return {
     inlineData: {
@@ -110,8 +109,8 @@ export async function POST(request: Request) {
 
     let prompt = `
 SYSTEM DIRECTIVE: Act as the Ravio Edge Quantitative Market Analyst. 
-You are evaluating Nifty 50 options data.
-You are currently providing a **${mode.toUpperCase()}-MARKET ANALYSIS**.
+I am evaluating Nifty 50 options data.
+I am currently providing a **${mode.toUpperCase()}-MARKET ANALYSIS**.
 
 **LIVE MARKET DATA SNAPSHOT:**
 - Nifty 50: ${marketData.nifty?.price} (${marketData.nifty?.changePercent?.toFixed(2)}%)
@@ -133,7 +132,6 @@ You are currently providing a **${mode.toUpperCase()}-MARKET ANALYSIS**.
 `;
     }
 
-    // Manual Data Injections
     if (manualData.giftNifty && manualData.giftNifty.price) {
       const g = manualData.giftNifty;
       prompt += `\n**MANUAL OVERRIDE - GIFT NIFTY LIVE DATA:**\nPrice: ${g.price} | Change: ${g.changeSign}${g.change} (${g.percentSign}${g.percent}%) | 30m Candle (O: ${g.o}, H: ${g.h}, L: ${g.l}, C: ${g.c})\n`;
@@ -153,25 +151,27 @@ You are currently providing a **${mode.toUpperCase()}-MARKET ANALYSIS**.
 - ${pulseNews}
 
 ---
-### YOUR TASK:
-Based on the data, the manual inputs, and specifically the breaking news/geopolitics provided above, generate a highly professional, actionable markdown analysis for a Nifty 50 options buyer.
+### MY TASK:
+Based on the data, the manual inputs, and specifically the breaking news/geopolitics provided above, I will generate a highly professional, actionable markdown analysis for a Nifty 50 options buyer.
 `;
 
     if (mode === 'current') {
       prompt += `
-Focus on intraday momentum, current sentiment driven by the news, and immediate support/resistance levels.
-If an option chain image screenshot is provided, extract strikes' values (OI, OI Change%, Volume, Vol Change%, IV, LTP, Strike Price) for PE/CE and live price, ATM IV, IV Change%, PCR, Market Lot, Days for expiry from the screenshot. Use this extracted data to recommend highly precise option strategies.
+I will focus on intraday momentum, current sentiment driven by the news, and immediate support/resistance levels.
+If an option chain image screenshot is provided, I will extract strikes' values (OI, OI Change%, Volume, Vol Change%, IV, LTP, Strike Price) for PE/CE and live price, ATM IV, IV Change%, PCR, Market Lot, Days for expiry from the screenshot. I will use this extracted data to recommend highly precise option strategies.
 
-If Nifty 50 or Bank Nifty chart screenshots (5-minute timeframe) are provided, visually analyze them using the following indicators which are present on the chart:
+If Nifty 50 or Bank Nifty chart screenshots (5-minute timeframe) are provided, I will visually analyze them using the following indicators which are present on the chart:
 - VWAP: Blue dotted line
 - EMA 9: Green Line
 - EMA 21: Red line
 - EMA 50: White Line
 - SMA 88: Yellow line
-Keep a close eye on support and resistance zones directly on the chart candles. 
+I will keep a close eye on support and resistance zones directly on the chart candles. 
+
+If an optional screenshot is provided, I will use it as additional context to refine my analysis.
 
 **Crucial Requirement for Live Analysis:**
-You MUST format your response into two distinct sections:
+I MUST format my response into two distinct sections:
 1. **Important Points**: A separate heading at the very top containing bullet points of the most critical immediate takeaways. THIS SECTION MUST INCLUDE:
    - Detection of whether the market is currently in consolidation/sideways or trending.
    - The overall Bias (Bullish, Bearish, or Neutral).
@@ -181,26 +181,26 @@ You MUST format your response into two distinct sections:
 `;
     } else if (mode === 'pre') {
       prompt += `
-Focus on analyzing the overnight US action, the latest breaking news, ADR performance, and Asian markets. 
-**Crucial Requirement:** Explicitly predict the likely opening behavior for the Indian market (Gap up/down/flat) factoring in the GIFT Nifty data if provided, and suggest the best strategy for the first 30 minutes of trade. Use the 5-day FII/DII data (if provided) to gauge underlying institutional trend.
+I will focus on analyzing the overnight US action, the latest breaking news, ADR performance, and Asian markets. 
+**Crucial Requirement:** I will explicitly predict the likely opening behavior for the Indian market (Gap up/down/flat) factoring in the GIFT Nifty data if provided, and suggest the best strategy for the first 30 minutes of trade. I will use the 5-day FII/DII data (if provided) to gauge underlying institutional trend.
 `;
     } else if (mode === 'post') {
       prompt += `
-Focus on summarizing today's action, the impact of breaking news, FII/DII sentiment derived from the manual table (if provided) or news, and explicitly predict the market sentiment for tomorrow based on how the US market is currently opening/trading.
+I will focus on summarizing today's action, the impact of breaking news, FII/DII sentiment derived from the manual table (if provided) or news, and explicitly predict the market sentiment for tomorrow based on how the US market is currently opening/trading.
 `;
     }
 
     prompt += `
-Keep the response structured and professional. Do not use introductory filler. Just output the raw markdown analysis. Highlight geopolitical impacts if they are present in the news or crude oil prices.
+I will keep the response structured and professional. I will not use introductory filler. I will just output the raw markdown analysis. I will highlight geopolitical impacts if they are present in the news or crude oil prices.
 `;
 
-    // Process Multimodal Images if present
     const imageParts = [];
     
     const imagesToProcess = [
       manualData.optionChainImage,
       manualData.niftyChartImage,
-      manualData.bankNiftyChartImage
+      manualData.bankNiftyChartImage,
+      manualData.optionalImage
     ];
 
     for (const img of imagesToProcess) {
@@ -213,7 +213,6 @@ Keep the response structured and professional. Do not use introductory filler. J
 
     const contentArray = [prompt, ...imageParts];
 
-    // Call Gemini API with automatic retries for 503
     const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
     let responseText = "";
     
@@ -221,7 +220,7 @@ Keep the response structured and professional. Do not use introductory filler. J
       try {
         const result = await model.generateContent(contentArray);
         responseText = result.response.text();
-        break; // Success
+        break;
       } catch (err: any) {
         console.error(`Attempt ${attempt} failed with error:`, err.message);
         if (err.status === 503 || (err.message && err.message.includes('503'))) {

@@ -17,6 +17,7 @@ Ravio Edge is a high-performance, Next.js-based terminal and web dashboard engin
 
 - **Multimodal Chart Analysis**: Upload screenshots of your 5-minute Nifty 50 or Bank Nifty charts. The system physically processes the chart geometry, detecting trendlines, support/resistance, and specific technical indicators (VWAP, EMAs, SMA 88).
 - **Options Chain Extraction**: Upload a screenshot of an options chain. The system parses Live Price, ATM IV, PCR, Volume, and Strike combinations directly from the data visual.
+- **Optional Context Support**: Upload a fourth optional screenshot (such as an additional timeframe or global index) to provide the AI with even deeper market perspective.
 - **Three Strategic Modes**:
   - 🌅 **Pre-Market (9:00 AM)**: Aggregates overnight US indices, Asian markets, and ADRs to predict the Indian market opening gap.
   - ⚡ **Live Market**: Focuses on intraday momentum, immediate support/resistance, and real-time news impact.

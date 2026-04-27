@@ -13,7 +13,7 @@
   
   # Ravio Edge: Quantitative Trading Terminal
 
-  **An AI-Powered, Glassmorphic Market Analysis Dashboard & Automated Snapshot Extension**
+  **An AI-Powered, Glassmorphic Market Analysis Dashboard & Snapshot Extension**
 
   [![Next.js](https://img.shields.io/badge/Built_with-Next.js-black?style=flat-square&logo=next.js)](https://nextjs.org/)
   [![Gemini 1.5](https://img.shields.io/badge/AI_Engine-Gemini_1.5_Flash-blue?style=flat-square&logo=google)](https://ai.google.dev/)
@@ -33,7 +33,7 @@ By combining technical indicators (VWAP, EMAs, SMA), institutional FII/DII data,
 
 This repository contains two interconnected modules:
 1. **`RavioEdge/`**: The core Next.js web application and AI engine.
-2. **`RavioSnap-Extension/`**: A custom Google Chrome extension that automates the capturing of live charts and beams them directly into the dashboard with a single click.
+2. **`RavioSnap-Extension/`**: A custom Google Chrome extension that automates the capturing of live charts and beams them directly into the dashboard.
 
 ---
 

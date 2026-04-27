@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'injectImages') {
-    // Dispatch the payload into the global window object so the React app can intercept it
+    // I am sending the payload to the global window so my React app can pick it up
     window.postMessage({
       type: "RAVIO_EXTENSION_IMAGES",
       images: request.images

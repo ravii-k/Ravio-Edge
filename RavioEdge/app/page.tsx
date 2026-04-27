@@ -13,7 +13,7 @@ interface MarketData {
 }
 
 export default function Home() {
-  const [mode, setMode] = useState('current'); // 'current', 'pre', 'post'
+  const [mode, setMode] = useState('current');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Record<string, any>>({
     pre: { analysis: null, marketData: null, news: null, error: null },
@@ -27,7 +27,6 @@ export default function Home() {
   const error = results[mode]?.error || null;
   const [showManual, setShowManual] = useState(true);
 
-  // Manual Data States
   const [giftNifty, setGiftNifty] = useState({
     price: '', changeSign: '+', change: '', percentSign: '+', percent: '', o: '', h: '', l: '', c: ''
   });
@@ -39,7 +38,7 @@ export default function Home() {
   const [optionChainImage, setOptionChainImage] = useState<string | null>(null);
   const [niftyChartImage, setNiftyChartImage] = useState<string | null>(null);
   const [bankNiftyChartImage, setBankNiftyChartImage] = useState<string | null>(null);
-  const [autoRunCounter, setAutoRunCounter] = useState(0);
+  const [optionalImage, setOptionalImage] = useState<string | null>(null);
 
   const handleFiiChange = (index: number, field: string, value: string) => {
     const newData = [...fiiDii];
@@ -58,7 +57,7 @@ export default function Home() {
       
       while (dates.length < 5) {
         const day = date.getDay();
-        if (day !== 0 && day !== 6) { // Skip Sunday(0) and Saturday(6)
+        if (day !== 0 && day !== 6) {
           dates.push(date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }));
         }
         date.setDate(date.getDate() - 1);
@@ -79,20 +78,11 @@ export default function Home() {
         if (images.nifty) setNiftyChartImage(images.nifty);
         if (images.bankNifty) setBankNiftyChartImage(images.bankNifty);
         if (images.optionChain) setOptionChainImage(images.optionChain);
-        
-        // Auto trigger run by incrementing state counter
-        setAutoRunCounter(prev => prev + 1);
       }
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, []);
-
-  useEffect(() => {
-    if (autoRunCounter > 0) {
-      analyzeMarket();
-    }
-  }, [autoRunCounter]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: React.Dispatch<React.SetStateAction<string | null>>) => {
     const file = e.target.files?.[0];
@@ -116,7 +106,8 @@ export default function Home() {
           fiiDii: (mode === 'pre' || mode === 'post') ? fiiDii : null,
           optionChainImage: mode === 'current' ? optionChainImage : null,
           niftyChartImage: mode === 'current' ? niftyChartImage : null,
-          bankNiftyChartImage: mode === 'current' ? bankNiftyChartImage : null
+          bankNiftyChartImage: mode === 'current' ? bankNiftyChartImage : null,
+          optionalImage: mode === 'current' ? optionalImage : null
         }
       };
 
@@ -176,7 +167,7 @@ export default function Home() {
         <div style={{ background: 'var(--accent-blue)', padding: '12px', borderRadius: '50%' }}>
           <ImagePlus size={24} color="white" />
         </div>
-        <span style={{ fontWeight: 500 }}>{imageState ? 'Image Uploaded! Click to change' : label}</span>
+        <span style={{ fontWeight: 500 }}>{imageState ? 'Image Uploaded!' : label}</span>
         <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{desc}</span>
       </label>
       {imageState && (
@@ -189,7 +180,6 @@ export default function Home() {
 
   return (
     <div className="app-container">
-      {/* Animated Background */}
       <div className="bg-animation">
         <div className="grid-layer"></div>
         <div className="glow-node n1"></div>
@@ -199,7 +189,6 @@ export default function Home() {
 
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '1400px', margin: '0 auto', display: 'flex', height: '100vh', padding: '24px' }}>
         
-        {/* Left Sidebar */}
         <aside style={{ width: '260px', height: '100%', borderRadius: '24px', padding: '24px 16px', border: '1px solid var(--glass-border)', background: 'var(--glass-bg)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', display: 'flex', flexDirection: 'column', marginRight: '32px' }}>
           
           <div style={{ marginBottom: '32px', padding: '0 8px' }}>
@@ -280,7 +269,6 @@ export default function Home() {
           </div>
         </aside>
 
-        {/* Main Content */}
         <main style={{ flex: 1, padding: '20px 0', height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
           <div style={{ flex: 1, maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
             
@@ -291,7 +279,6 @@ export default function Home() {
               </div>
             </header>
 
-          {/* External Links */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '30px', flexWrap: 'wrap' }}>
             <a href="https://www.moneycontrol.com/live-index/gift-nifty?symbol=in;gsx" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem' }}>
               <ExternalLink size={16} /> Live GIFT Nifty
@@ -304,7 +291,6 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Manual Data Entry Section */}
           <div className="glass-panel" style={{ marginBottom: '40px', padding: '0', overflow: 'hidden' }}>
             <button
               onClick={() => setShowManual(!showManual)}
@@ -317,7 +303,6 @@ export default function Home() {
             {showManual && (
               <div style={{ padding: '24px' }}>
 
-                {/* Live Market: Image Uploads */}
                 {mode === 'current' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>Upload Live Data for Multimodal Analysis (Optional)</h3>
@@ -325,15 +310,14 @@ export default function Home() {
                       {renderUploadBox('optionChainUpload', 'Options Chain', 'Auto-extract Strikes, OI, IV, PCR', optionChainImage, setOptionChainImage)}
                       {renderUploadBox('niftyChartUpload', 'Nifty 50 Chart', '5m timeframe, VWAP, EMAs, SMA 88', niftyChartImage, setNiftyChartImage)}
                       {renderUploadBox('bankNiftyChartUpload', 'Bank Nifty Chart', '5m timeframe, VWAP, EMAs, SMA 88', bankNiftyChartImage, setBankNiftyChartImage)}
+                      {renderUploadBox('optionalImageUpload', 'Optional Screenshot', 'Additional context for AI analysis', optionalImage, setOptionalImage)}
                     </div>
                   </div>
                 )}
 
-                {/* Pre/Post Market: GIFT Nifty & FII Grid */}
                 {(mode === 'pre' || mode === 'post') && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
 
-                    {/* GIFT Nifty */}
                     <div>
                       <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '16px' }}>GIFT Nifty Live Data</h3>
                       <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -362,7 +346,6 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* FII/DII Grid */}
                     <div>
                       <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '16px' }}>FII/DII Activity (Last 5 Days - Net Values in Cr)</h3>
                       <div style={{ overflowX: 'auto' }}>
@@ -397,7 +380,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* Action Area */}
           <div style={{ maxWidth: '400px', margin: '0 auto 40px' }}>
             <button
               id="run-analysis-btn"
@@ -408,7 +390,7 @@ export default function Home() {
               {loading ? (
                 <>
                   <Loader2 className="spinner" size={24} />
-                  Generating {mode.toUpperCase()} Analysis...
+                  I am Generating {mode.toUpperCase()} Analysis...
                 </>
               ) : (
                 <>
@@ -419,7 +401,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="glass-panel" style={{ border: '1px solid var(--negative)', marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <AlertTriangle color="var(--negative)" size={24} />
@@ -427,11 +408,9 @@ export default function Home() {
             </div>
           )}
 
-          {/* Results Dashboard */}
           {(marketData || analysis) && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }}>
 
-              {/* Market Data Grid */}
               {marketData && (
                 <div>
                   <h2 style={{ fontSize: '1.2rem', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -476,7 +455,6 @@ export default function Home() {
                 </div>
               )}
 
-              {/* AI Analysis Result */}
               {analysis && (
                 <div className="glass-panel markdown-content" style={{ padding: '32px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', borderBottom: '1px solid var(--glass-border)', paddingBottom: '16px' }}>
